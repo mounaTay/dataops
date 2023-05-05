@@ -1,0 +1,4 @@
+delta-spark==2.3.0
+pyspark~=3.3.0
+findspark~=2.0.1
+apache-airflow==2.3.0
