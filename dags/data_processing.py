@@ -17,12 +17,17 @@ default_args = {
     "provide_context": True,
 }
 
+
 def choose_data_source(ti):
-    first_run = ti.xcom_pull(key="first_run", task_ids="create_snapshot", dag_id='data_processing', include_prior_dates=True)
+    first_run = ti.xcom_pull(
+        key="first_run",
+        task_ids="create_snapshot",
+        dag_id="data_processing",
+        include_prior_dates=True,
+    )
     if first_run is None:
         return "create_snapshot"
     return "update_data"
-
 
 
 with DAG(

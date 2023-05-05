@@ -36,7 +36,7 @@ def create_snapshot(data_path: str = BRONZE_LAYER_DATA_PATH, **context) -> None:
     df.write.partitionBy("year", "month").format("delta").mode("overwrite").option(
         "mergeSchema", True
     ).save(SILVER_LAYER_DTA_PATH)
-    context['ti'].xcom_push(key="first_run", value=True)
+    context["ti"].xcom_push(key="first_run", value=True)
 
 
 def update_data(data_path: str = BRONZE_LAYER_DATA_PATH) -> None:
@@ -53,8 +53,10 @@ def update_data(data_path: str = BRONZE_LAYER_DATA_PATH) -> None:
 
     snapshot.alias("snapshot").merge(
         updates.alias("updates"),
-        "snapshot.id = updates.id and snapshot.integration_time <= updates.integration_time",
-    ).whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
+        "snapshot.id = updates.id",
+    ).whenMatchedUpdateAll(
+        "snapshot.integration_time <= updates.integration_time"
+    ).whenNotMatchedInsertAll().execute()
 
 
 def process_data(data_path: str) -> None:
